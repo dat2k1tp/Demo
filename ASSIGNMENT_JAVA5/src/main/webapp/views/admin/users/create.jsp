@@ -74,10 +74,11 @@
 				
 									</div>	
 									<label for="photo">Image</label>
-									<input name="photo" type="file"  class="form-control" 
+									<form:input path="photo" type="file"  class="form-control" 
 									id="photo" accept=".jpeg, .png, .jpg, .gif" onchange="ImageFileURL()"
 									/>
 									<form:errors path="photo" element="span" cssClass="text-danger" />
+									<span class="text-danger">${photoError}</span>
 								</div>
 								
 								

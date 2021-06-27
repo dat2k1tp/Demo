@@ -1,6 +1,7 @@
 package com.spring.controller.user;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,6 +32,7 @@ import com.spring.repositories.OrderDetailRepository;
 import com.spring.repositories.OrderRepository;
 import com.spring.repositories.UserRepository;
 import com.spring.utilities.HashUtil;
+import com.spring.utilities.UploadFileUtils;
 
 
 
@@ -53,6 +55,9 @@ public class MemberController {
 	@Autowired
 	private HttpServletRequest request;
 	
+	@Autowired
+	private UploadFileUtils uploadFiles;
+	
 	
 	@GetMapping(value="/edit/{id}")
 	public String edit(Model model,
@@ -71,9 +76,11 @@ public class MemberController {
 			@PathVariable("id") Integer id
 	){
 		
-		
-		
-		if(result.hasErrors()) {
+		if (user.getPhoto().getOriginalFilename().isEmpty()) {
+			model.addAttribute("photoError","Anh chua duoc cap nhat !");
+			return "member/edit";
+		}
+		else if(result.hasErrors()) {
 			System.out.println("có lỗi nhé"+result.getAllErrors());
 			return "member/edit";
 		}else if(!user.getPasswordConfirm().equalsIgnoreCase(user.getPassword())) {
@@ -89,9 +96,15 @@ public class MemberController {
 			entity.setPassword(hashedPassword);
 			User entityFindEmail=this.userRepo.getOne(id);
 			entity.setEmail(entityFindEmail.getEmail());
-			if(entity.getPhoto().length()==0) {
-				entity.setPhoto("default.img");
-			}
+			
+			//luu vao storage
+			String uuid=UUID.randomUUID().toString();
+			String fileName=uuid.substring(0, 13)+"_"
+			+user.getPhoto().getOriginalFilename();
+			this.uploadFiles.handleUploadFile(user.getPhoto(), fileName);
+			//set up anh de luu vao db
+			entity.setPhoto(fileName);
+			
 			this.userRepo.save(entity);
 			System.out.println("không có lỗi");
 			return "redirect:/home";

@@ -110,7 +110,12 @@ public class UserController {
 			BindingResult result
 			) 
 	{
-		if(result.hasErrors()) {
+		if (user.getPhoto().getOriginalFilename().isEmpty()) {
+			model.addAttribute("photoError","Khong de trong anh !");
+			return "admin/users/create";
+		}
+		else if(result.hasErrors()) {
+			System.out.println("co loi"+result.getAllErrors());
 			return "admin/users/create";
 		}else {
 			User entity =this.mapper.convertToEntity(user);
@@ -145,18 +150,22 @@ public class UserController {
 			@Valid UserDTO user,
 			BindingResult result
 	){
-		if(result.hasErrors()) {
+		if (user.getPhoto().getOriginalFilename().isEmpty()) {
+			model.addAttribute("photoError","Anh chua duoc cap nhat !");
+			return "admin/users/edit";
+		}
+		else if(result.hasErrors()) {
 			System.out.println("có lỗi nhé"+result.getAllErrors());
-			model.addAttribute("errors",result.getAllErrors());
 			return "admin/users/edit";
 		}else {
 			User entity =this.mapper.convertToEntity(user);
 			
-			//set up anh de luu vao db
+			//luu vao storage
 			String uuid=UUID.randomUUID().toString();
 			String fileName=uuid.substring(0, 13)+"_"
 			+user.getPhoto().getOriginalFilename();
 			this.uploadFiles.handleUploadFile(user.getPhoto(), fileName);
+			//set up anh de luu vao db
 			entity.setPhoto(fileName);
 			
 			this.userRepo.save(entity);

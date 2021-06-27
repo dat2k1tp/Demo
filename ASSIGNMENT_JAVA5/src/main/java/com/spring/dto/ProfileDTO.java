@@ -4,6 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ public class ProfileDTO {
 	@NotBlank
 	private String passwordConfirm;
 	
-	private String photo;
+	@NotNull
+	private MultipartFile photo;
 	
 }

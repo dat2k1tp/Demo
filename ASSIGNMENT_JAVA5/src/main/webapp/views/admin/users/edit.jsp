@@ -65,6 +65,7 @@
 										<form:option value="0" >Member</form:option>
 									</form:select>
 									<form:errors path="admin" element="span" cssClass="text-danger" />
+									
 								</div>
 								
 								<div class="form-group mt-3">
@@ -72,10 +73,11 @@
 				
 									</div>	
 									<label for="photo">Image</label>
-									<input name="photo" type="file"  class="form-control" 
+									<form:input path="photo" type="file"  class="form-control" 
 									id="photo" accept=".jpeg, .png, .jpg, .gif" onchange="ImageFileURL()"
 									/>
 								     <form:errors path="photo" element="span" cssClass="text-danger" />
+								     <span class="text-warning">${photoError}</span>
 								</div>
 								
 								

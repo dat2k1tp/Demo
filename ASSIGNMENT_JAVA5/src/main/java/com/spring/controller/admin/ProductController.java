@@ -135,11 +135,17 @@ public class ProductController {
 		List<Category> listCate=this.categoryRepo.findAll();
 		model.addAttribute("categories",listCate);
 		
-		
-		if(result.hasErrors()) {
+		System.out.println(product.getImage());
+		if (product.getImage().getOriginalFilename().isBlank()) {
+			System.out.println("img nulll p3");
+			model.addAttribute("imageError","Khong de trong anh");
+			return "admin/products/create";
+		}
+		else if(result.hasErrors()) {
 			System.out.println("co loi"+result.getAllErrors());
 			return "admin/products/create";
-		}else {
+		}
+		else {
 			Product entity =this.mapper.convertToEntity(product);
 			System.out.println("Id"+entity.getCategory());
 			entity.setDelete_at(0);
@@ -176,10 +182,16 @@ public class ProductController {
 	){
 		List<Category> listCate=this.categoryRepo.findAll();
 		model.addAttribute("categories",listCate);
-		if(result.hasErrors()) {
-			model.addAttribute("errors",result.getAllErrors());
+		
+		if (product.getImage().getOriginalFilename().isEmpty()) {
+			model.addAttribute("imageError","Anh chua duoc cap nhat !");
 			return "admin/products/edit";
-		}else {
+		}
+		else if(result.hasErrors()) {
+			System.out.println("co loi "+result.getAllErrors());
+			return "admin/products/edit";
+		}
+		else {
 			Product entity =this.mapper.convertToEntity(product);
 			entity.setDelete_at(0);
 			
